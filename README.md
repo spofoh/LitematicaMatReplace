@@ -33,7 +33,7 @@ Type a name or namespaced ID and choose from rendered block previews.
 2. Download [Litematica](https://modrinth.com/mod/litematica) and
    [MaLiLib](https://modrinth.com/mod/malilib) for your exact Minecraft version.
 3. Download the matching LMR jar from
-   [GitHub Releases](https://github.com/NullKeeper-dev/LitematicaMatReplace/releases)
+   [Modrinth](https://modrinth.com/mod/litematicamatreplace-lmr)
    and place all three mods in your `mods` folder.
 
 > **Supported:** Minecraft `26.1`, `26.1.1`, `26.1.2`, and `26.2` on Fabric.
