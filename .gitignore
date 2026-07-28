@@ -1,0 +1,33 @@
+AGENTS.md
+
+# Gradle and build output
+.gradle/
+build/
+out/
+bin/
+
+# Fabric Loom runtime data
+run/
+logs/
+run-client*.log
+
+# Stonecutter generated workspaces
+.stonecutter/
+
+# IDE metadata
+.idea/
+.settings/
+*.classpath
+*.project
+*.iml
+*.ipr
+*.iws
+
+# Local configuration and secrets
+.env
+.env.*
+local.properties
+
+# Operating system files
+.DS_Store
+Thumbs.db

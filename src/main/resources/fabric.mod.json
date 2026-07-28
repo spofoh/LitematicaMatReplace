@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "lmr",
+  "version": "${mod_version}",
+  "name": "LMR",
+  "icon": "assets/lmr/icon.png",
+  "description": "Replace every matching material in a loaded Litematica schematic.",
+  "authors": [
+    "NullKeeper-dev"
+  ],
+  "contact": {
+    "homepage": "https://github.com/NullKeeper-dev/LitematicaMatReplace",
+    "sources": "https://github.com/NullKeeper-dev/LitematicaMatReplace",
+    "issues": "https://github.com/NullKeeper-dev/LitematicaMatReplace/issues"
+  },
+  "license": "GPL-3.0-only",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "dev.nullkeeper.lmr.LmrClient"
+    ]
+  },
+  "mixins": [
+    "lmr.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${fabric_loader_version}",
+    "java": ">=25",
+    "minecraft": "${minecraft_compat}",
+    "malilib": "${malilib_compat}",
+    "litematica": "${litematica_compat}"
+  }
+}
