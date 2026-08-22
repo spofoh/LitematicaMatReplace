@@ -48,8 +48,8 @@ Type a name or namespaced ID and choose from rendered block previews.
 5. Choose **Save Changes**, then **Overwrite Original** or **Export as New**.
 
 > **Tip:** Export as new if you want to keep the original schematic untouched.
-> Replacements use the target block's default state; NBT and orientation are
-> not preserved.
+> Compatible block properties such as orientation, bed half, stair shape, and
+> waterlogging are preserved. Block entity NBT is not preserved.
 
 <details>
 <summary><strong>Build from source</strong></summary>

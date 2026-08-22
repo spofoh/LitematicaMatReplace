@@ -28,6 +28,9 @@
 
 - Fixed the block-picker search field failing to apply typed queries to the
   visible grid.
+- Fixed stateful blocks such as beds losing their direction and head/foot
+  properties during replacement.
+
 ### Changed
 
 - Material replacements can now be queued in one editing session and saved

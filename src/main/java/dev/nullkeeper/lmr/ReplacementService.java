@@ -27,6 +27,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.Property;
 
 public final class ReplacementService {
     private ReplacementService() {
@@ -173,7 +174,10 @@ public final class ReplacementService {
                                     x,
                                     y,
                                     z,
-                                    operation.targetBlock().defaultBlockState()
+                                    replacementState(
+                                        currentState,
+                                        operation.targetBlock().defaultBlockState()
+                                    )
                                 );
                             }
                             break;
@@ -210,7 +214,12 @@ public final class ReplacementService {
 
                         matches++;
                         if (replacement != null) {
-                            container.set(x, y, z, replacement);
+                            container.set(
+                                x,
+                                y,
+                                z,
+                                replacementState(currentState, replacement)
+                            );
                         }
                     }
                 }
@@ -218,6 +227,27 @@ public final class ReplacementService {
         }
 
         return matches;
+    }
+
+    static BlockState replacementState(
+        BlockState currentState,
+        BlockState targetState
+    ) {
+        BlockState result = targetState;
+        for (Property<?> property : currentState.getProperties()) {
+            if (result.hasProperty(property)) {
+                result = copyProperty(currentState, result, property);
+            }
+        }
+        return result;
+    }
+
+    private static <T extends Comparable<T>> BlockState copyProperty(
+        BlockState source,
+        BlockState target,
+        Property<T> property
+    ) {
+        return target.setValue(property, source.getValue(property));
     }
 
     private static boolean matchesMaterial(BlockState state, ItemType sourceType) {

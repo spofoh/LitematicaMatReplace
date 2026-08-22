@@ -30,9 +30,12 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.Bootstrap;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BedPart;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -149,6 +152,33 @@ final class ReplacementServiceTest {
             batch.operationFor(stone.sourceType()).orElseThrow().targetBlock()
         );
         batch.finish();
+    }
+
+    @Test
+    void preservesSharedBedPropertiesWhenChangingBedColor() {
+        Block blackBed;
+        Block whiteBed;
+        //? if >=26.2 {
+        blackBed = Blocks.BED.black();
+        whiteBed = Blocks.BED.white();
+        //?} else {
+        /*blackBed = Blocks.BLACK_BED;
+        whiteBed = Blocks.WHITE_BED;
+        *///?}
+
+        BlockState blackHead = blackBed
+            .defaultBlockState()
+            .setValue(BedBlock.FACING, Direction.EAST)
+            .setValue(BedBlock.PART, BedPart.HEAD);
+
+        BlockState whiteHead = ReplacementService.replacementState(
+            blackHead,
+            whiteBed.defaultBlockState()
+        );
+
+        assertSame(whiteBed, whiteHead.getBlock());
+        assertSame(Direction.EAST, whiteHead.getValue(BedBlock.FACING));
+        assertSame(BedPart.HEAD, whiteHead.getValue(BedBlock.PART));
     }
 
     private static ReplacementContext contextFor(
