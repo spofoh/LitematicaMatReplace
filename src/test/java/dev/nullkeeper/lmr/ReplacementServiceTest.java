@@ -142,6 +142,12 @@ final class ReplacementServiceTest {
         assertSame(Blocks.DIRT.defaultBlockState(), container.get(0, 0, 0));
         assertSame(Blocks.OAK_PLANKS.defaultBlockState(), container.get(1, 0, 0));
         assertSame(Blocks.OAK_PLANKS.defaultBlockState(), container.get(2, 0, 0));
+        batch.put(stone, candidateFor(Blocks.OAK_PLANKS));
+        assertEquals(2, batch.size());
+        assertSame(
+            Blocks.OAK_PLANKS,
+            batch.operationFor(stone.sourceType()).orElseThrow().targetBlock()
+        );
         batch.finish();
     }
 

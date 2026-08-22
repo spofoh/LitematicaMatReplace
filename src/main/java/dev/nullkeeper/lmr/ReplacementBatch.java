@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.WeakHashMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -37,6 +38,10 @@ public final class ReplacementBatch {
         );
     }
 
+    public static Optional<ReplacementBatch> find(ReplacementContext context) {
+        return Optional.ofNullable(ACTIVE.get(context.schematic()));
+    }
+
     public ReplacementContext context() {
         return this.context;
     }
@@ -47,6 +52,12 @@ public final class ReplacementBatch {
 
     public int size() {
         return this.operations.size();
+    }
+
+    public Optional<Operation> operationFor(ItemType sourceType) {
+        return this.operations.stream()
+            .filter(operation -> operation.sourceType().equals(sourceType))
+            .findFirst();
     }
 
     public void put(ReplacementContext source, Candidate target) {

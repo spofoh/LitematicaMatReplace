@@ -5,6 +5,8 @@
   "lmr.gui.button.save_changes": "Save Changes",
   "lmr.gui.button.export": "Export as New",
   "lmr.gui.button.overwrite": "Overwrite Original",
+  "lmr.gui.button.queued": "Queued",
+  "lmr.gui.button.queued_hover": "Queued to become %s. Click to change.",
   "lmr.gui.button.replace": "Replace",
   "lmr.gui.confirm.affected": "%s block positions will be changed",
   "lmr.gui.confirm.title": "Confirm Material Replacement",

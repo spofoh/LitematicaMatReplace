@@ -14,6 +14,7 @@
 package dev.nullkeeper.lmr.mixin;
 
 import dev.nullkeeper.lmr.FeatureGuard;
+import dev.nullkeeper.lmr.ReplacementBatch;
 import dev.nullkeeper.lmr.ReplacementContext;
 import dev.nullkeeper.lmr.gui.BlockPickerScreen;
 import fi.dy.masa.litematica.gui.widgets.WidgetListMaterialList;
@@ -83,9 +84,19 @@ public abstract class WidgetMaterialListEntryMixin
             //?} else {
             /*Screen currentScreen = minecraft.screen;
             *///?}
-            if (ReplacementContext.create(materialList, entry, currentScreen).isEmpty()) {
+            ReplacementContext context = ReplacementContext.create(
+                materialList,
+                entry,
+                currentScreen
+            ).orElse(null);
+            if (context == null) {
                 return;
             }
+
+            ReplacementBatch.Operation queuedOperation = ReplacementBatch
+                .find(context)
+                .flatMap(batch -> batch.operationFor(context.sourceType()))
+                .orElse(null);
 
             ButtonGeneric ignoreSizingButton = new ButtonGeneric(
                 x + width,
@@ -99,8 +110,18 @@ public abstract class WidgetMaterialListEntryMixin
                 y + 1,
                 -1,
                 true,
-                "lmr.gui.button.replace"
+                queuedOperation == null
+                    ? "lmr.gui.button.replace"
+                    : "lmr.gui.button.queued"
             );
+            if (queuedOperation != null) {
+                replaceButton.setHoverStrings(
+                    fi.dy.masa.malilib.util.StringUtils.translate(
+                        "lmr.gui.button.queued_hover",
+                        queuedOperation.targetStack().getHoverName().getString()
+                    )
+                );
+            }
 
             this.addButton(replaceButton, (button, mouseButton) ->
                 FeatureGuard.run("material-list Replace button", () -> {
@@ -113,8 +134,10 @@ public abstract class WidgetMaterialListEntryMixin
                         this.materialList,
                         this.entry,
                         parent
-                    ).ifPresent(context -> {
-                        BlockPickerScreen picker = new BlockPickerScreen(context);
+                    ).ifPresent(replacementContext -> {
+                        BlockPickerScreen picker = new BlockPickerScreen(
+                            replacementContext
+                        );
                         picker.setParent(parent);
                         GuiBase.openGui(picker);
                     });

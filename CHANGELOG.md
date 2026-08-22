@@ -34,3 +34,5 @@
   together, so the overwrite/export choice is only made once at the end.
 - All actions use Minecraft's native button sprites and therefore follow the
   active resource pack.
+- Material-list rows already present in the queue are marked as `Queued` and
+  show their target block on hover; clicking them allows changing the target.
