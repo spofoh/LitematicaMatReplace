@@ -36,6 +36,10 @@ public final class ReplacementService {
         return visitMatchingPositions(context.schematic(), context.sourceType(), null);
     }
 
+    public static long countPlannedChanges(ReplacementBatch batch) {
+        return applyOperations(batch.context().schematic(), batch.operations(), false);
+    }
+
     static long replaceMatchingPositions(
         LitematicaSchematic schematic,
         ItemType sourceType,
@@ -96,6 +100,89 @@ public final class ReplacementService {
         context.materialList().reCreateMaterialList();
 
         return new SaveResult(true, liveChanges, targetFile, SaveFailure.NONE);
+    }
+
+    public static SaveResult saveAndApply(
+        ReplacementBatch batch,
+        Path directory,
+        String fileName,
+        boolean overwrite
+    ) {
+        ReplacementContext context = batch.context();
+        Path targetFile = LitematicaSchematic.fileFromDirAndName(
+            directory,
+            fileName,
+            FileType.LITEMATICA_SCHEMATIC
+        );
+
+        CompoundTag snapshot = context.schematic().writeToNBT();
+        LitematicaSchematic outputSchematic = new LitematicaSchematic(
+            targetFile,
+            snapshot,
+            FileType.LITEMATICA_SCHEMATIC
+        );
+        long outputChanges = applyOperations(outputSchematic, batch.operations(), true);
+        if (outputChanges == 0) {
+            return new SaveResult(false, 0, targetFile, SaveFailure.NO_MATCHES);
+        }
+
+        if (!outputSchematic.writeToFile(directory, fileName, overwrite)) {
+            return new SaveResult(false, 0, targetFile, SaveFailure.WRITE_FAILED);
+        }
+
+        long liveChanges = applyOperations(context.schematic(), batch.operations(), true);
+        if (liveChanges != outputChanges) {
+            LmrClient.LOGGER.warn(
+                "LMR wrote {} batched replacements but applied {} to the live schematic",
+                outputChanges,
+                liveChanges
+            );
+        }
+
+        DataManager.getSchematicPlacementManager()
+            .markAllPlacementsOfSchematicForRebuild(context.schematic());
+        context.materialList().reCreateMaterialList();
+        return new SaveResult(true, liveChanges, targetFile, SaveFailure.NONE);
+    }
+
+    static long applyOperations(
+        LitematicaSchematic schematic,
+        java.util.List<ReplacementBatch.Operation> operations,
+        boolean replace
+    ) {
+        long changes = 0;
+        for (String regionName : schematic.getAreas().keySet()) {
+            LitematicaBlockStateContainer container =
+                schematic.getSubRegionContainer(regionName);
+            if (container == null) {
+                continue;
+            }
+
+            Vec3i size = container.getSize();
+            for (int y = 0; y < size.getY(); y++) {
+                for (int z = 0; z < size.getZ(); z++) {
+                    for (int x = 0; x < size.getX(); x++) {
+                        BlockState currentState = container.get(x, y, z);
+                        for (ReplacementBatch.Operation operation : operations) {
+                            if (!matchesMaterial(currentState, operation.sourceType())) {
+                                continue;
+                            }
+                            changes++;
+                            if (replace) {
+                                container.set(
+                                    x,
+                                    y,
+                                    z,
+                                    operation.targetBlock().defaultBlockState()
+                                );
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return changes;
     }
 
     private static long visitMatchingPositions(

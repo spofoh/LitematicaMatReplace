@@ -13,8 +13,8 @@
  */
 package dev.nullkeeper.lmr.gui;
 
-import dev.nullkeeper.lmr.BlockCatalog.Candidate;
 import dev.nullkeeper.lmr.FeatureGuard;
+import dev.nullkeeper.lmr.ReplacementBatch;
 import dev.nullkeeper.lmr.ReplacementContext;
 import dev.nullkeeper.lmr.ReplacementService;
 import dev.nullkeeper.lmr.ReplacementService.SaveFailure;
@@ -37,23 +37,17 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
 public final class PersistenceScreen extends LmrGuiBase {
+    private final ReplacementBatch batch;
     private final ReplacementContext replacementContext;
-    private final Candidate target;
-    private final long affectedPositions;
     private final Path originalFile;
     private final Path outputDirectory;
     private GuiTextFieldGeneric exportNameField;
     private String exportName;
     private String errorMessage;
 
-    public PersistenceScreen(
-        ReplacementContext replacementContext,
-        Candidate target,
-        long affectedPositions
-    ) {
-        this.replacementContext = replacementContext;
-        this.target = target;
-        this.affectedPositions = affectedPositions;
+    public PersistenceScreen(ReplacementBatch batch) {
+        this.batch = batch;
+        this.replacementContext = batch.context();
         this.originalFile = replacementContext.schematic().getFile();
         this.outputDirectory = this.originalFile != null
             && this.originalFile.getParent() != null
@@ -261,8 +255,7 @@ public final class PersistenceScreen extends LmrGuiBase {
         SaveResult result = FeatureGuard.call(
             "schematic save and apply",
             () -> ReplacementService.saveAndApply(
-                this.replacementContext,
-                this.target.block(),
+                this.batch,
                 this.outputDirectory,
                 fileName,
                 overwrite
@@ -285,6 +278,7 @@ public final class PersistenceScreen extends LmrGuiBase {
             result.changedPositions(),
             result.targetFile().getFileName()
         );
+        this.batch.finish();
         openRefreshedMaterialList();
     }
 

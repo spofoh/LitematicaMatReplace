@@ -15,6 +15,7 @@ package dev.nullkeeper.lmr.gui;
 
 import dev.nullkeeper.lmr.BlockCatalog.Candidate;
 import dev.nullkeeper.lmr.FeatureGuard;
+import dev.nullkeeper.lmr.ReplacementBatch;
 import dev.nullkeeper.lmr.ReplacementContext;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
@@ -52,18 +53,18 @@ public final class ConfirmationScreen extends LmrGuiBase {
             this.height - 34,
             buttonWidth,
             20,
-            tr("lmr.gui.button.confirm")
+            tr("lmr.gui.button.add_change")
         );
         confirmButton.setEnabled(this.affectedPositions > 0);
         this.addButton(confirmButton, (button, mouseButton) ->
             FeatureGuard.run("confirmation Confirm button", () -> {
-                PersistenceScreen persistence = new PersistenceScreen(
-                    this.replacementContext,
-                    this.target,
-                    this.affectedPositions
+                ReplacementBatch batch = ReplacementBatch.forContext(
+                    this.replacementContext
                 );
-                persistence.setParent(this);
-                GuiBase.openGui(persistence);
+                batch.put(this.replacementContext, this.target);
+                BatchReviewScreen review = new BatchReviewScreen(batch);
+                review.setParent(this);
+                GuiBase.openGui(review);
             })
         );
 

@@ -28,3 +28,9 @@
 
 - Fixed the block-picker search field failing to apply typed queries to the
   visible grid.
+### Changed
+
+- Material replacements can now be queued in one editing session and saved
+  together, so the overwrite/export choice is only made once at the end.
+- All actions use Minecraft's native button sprites and therefore follow the
+  active resource pack.

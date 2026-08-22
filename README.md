@@ -11,7 +11,7 @@
 
 | 🔁 Replace everywhere | 🔎 Find blocks fast | 💾 Save your way |
 | --- | --- | --- |
-| Changes the actual schematic block data. | Search by block name or ID. | Overwrite the original or export a copy. |
+| Changes the actual schematic block data. | Search by block name or ID. | Queue several replacements, then save once. |
 
 ## See it in action
 
@@ -43,8 +43,9 @@ Type a name or namespaced ID and choose from rendered block previews.
 
 1. Open a schematic or placement **Material List**.
 2. Click **Replace** beside the material you want to change.
-3. Search for and select the new block, then confirm the preview.
-4. Choose **Overwrite Original** or **Export as New**.
+3. Search for and select the new block, then add the change to the queue.
+4. Choose **Replace Another** until all wanted materials are queued.
+5. Choose **Save Changes**, then **Overwrite Original** or **Export as New**.
 
 > **Tip:** Export as new if you want to keep the original schematic untouched.
 > Replacements use the target block's default state; NBT and orientation are

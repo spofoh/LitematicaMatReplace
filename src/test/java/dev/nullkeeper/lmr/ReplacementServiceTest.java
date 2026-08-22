@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
+import dev.nullkeeper.lmr.BlockCatalog.Candidate;
 import fi.dy.masa.litematica.schematic.LitematicaSchematic;
 import fi.dy.masa.litematica.schematic.container.LitematicaBlockStateContainer;
 import fi.dy.masa.litematica.selection.AreaSelection;
@@ -103,5 +104,65 @@ final class ReplacementServiceTest {
             Blocks.COBBLESTONE.defaultBlockState(),
             container.get(2, 0, 0)
         );
+    }
+
+    @Test
+    void countsBatchedReplacementsWithoutCascadingTargets() {
+        AreaSelection area = new AreaSelection();
+        area.setName("LMR batch test");
+        area.addSubRegionBox(
+            new Box(BlockPos.ZERO, new BlockPos(2, 0, 0), "main"),
+            true
+        );
+
+        LitematicaSchematic schematic =
+            LitematicaSchematic.createEmptySchematic(area, "LMR batch test");
+        assertNotNull(schematic);
+        LitematicaBlockStateContainer container =
+            schematic.getSubRegionContainer("main");
+        assertNotNull(container);
+        container.set(0, 0, 0, Blocks.STONE.defaultBlockState());
+        container.set(1, 0, 0, Blocks.DIRT.defaultBlockState());
+        container.set(2, 0, 0, Blocks.OAK_PLANKS.defaultBlockState());
+
+        ReplacementContext stone = contextFor(schematic, Blocks.STONE);
+        ReplacementContext dirt = contextFor(schematic, Blocks.DIRT);
+        ReplacementBatch batch = ReplacementBatch.forContext(stone);
+        batch.put(stone, candidateFor(Blocks.DIRT));
+        batch.put(dirt, candidateFor(Blocks.OAK_PLANKS));
+
+        assertEquals(2, batch.size());
+        assertEquals(2, ReplacementService.countPlannedChanges(batch));
+        assertSame(Blocks.STONE.defaultBlockState(), container.get(0, 0, 0));
+        assertSame(Blocks.DIRT.defaultBlockState(), container.get(1, 0, 0));
+        assertEquals(
+            2,
+            ReplacementService.applyOperations(schematic, batch.operations(), true)
+        );
+        assertSame(Blocks.DIRT.defaultBlockState(), container.get(0, 0, 0));
+        assertSame(Blocks.OAK_PLANKS.defaultBlockState(), container.get(1, 0, 0));
+        assertSame(Blocks.OAK_PLANKS.defaultBlockState(), container.get(2, 0, 0));
+        batch.finish();
+    }
+
+    private static ReplacementContext contextFor(
+        LitematicaSchematic schematic,
+        net.minecraft.world.level.block.Block block
+    ) {
+        ItemStack stack = new ItemStack(block);
+        return new ReplacementContext(
+            null,
+            null,
+            stack,
+            new ItemType(stack, true, false),
+            schematic,
+            null
+        );
+    }
+
+    private static Candidate candidateFor(net.minecraft.world.level.block.Block block) {
+        ItemStack stack = new ItemStack(block);
+        String name = stack.getHoverName().getString();
+        return new Candidate(block, stack, name, name, name, name);
     }
 }
