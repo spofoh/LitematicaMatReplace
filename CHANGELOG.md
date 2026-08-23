@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.1.1]
+### Fixed
+
+- Fixed stateful blocks such as beds and slabs losing compatible properties
+  such as direction, head/foot, and top/bottom/double during replacement.
+
+### Changed
+
+- Material replacements can now be queued in one editing session and saved
+  together, so the overwrite/export choice is only made once at the end.
+- All actions use Minecraft's native button sprites and therefore follow the
+  active resource pack.
+- Material-list rows already present in the queue are marked as `Queued` and
+  show their target block on hover; clicking them allows changing the target.
+
 ## [0.1.0]
 ### Added
 
@@ -28,14 +43,3 @@
 
 - Fixed the block-picker search field failing to apply typed queries to the
   visible grid.
-- Fixed stateful blocks such as beds losing their direction and head/foot
-  properties during replacement.
-
-### Changed
-
-- Material replacements can now be queued in one editing session and saved
-  together, so the overwrite/export choice is only made once at the end.
-- All actions use Minecraft's native button sprites and therefore follow the
-  active resource pack.
-- Material-list rows already present in the queue are marked as `Queued` and
-  show their target block on hover; clicking them allows changing the target.

@@ -34,8 +34,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BedPart;
+import net.minecraft.world.level.block.state.properties.SlabType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -179,6 +181,26 @@ final class ReplacementServiceTest {
         assertSame(whiteBed, whiteHead.getBlock());
         assertSame(Direction.EAST, whiteHead.getValue(BedBlock.FACING));
         assertSame(BedPart.HEAD, whiteHead.getValue(BedBlock.PART));
+    }
+
+    @Test
+    void preservesTopAndDoubleSlabTypes() {
+        BlockState topSlab = Blocks.DEEPSLATE_BRICK_SLAB
+            .defaultBlockState()
+            .setValue(SlabBlock.TYPE, SlabType.TOP);
+        BlockState doubleSlab = topSlab.setValue(SlabBlock.TYPE, SlabType.DOUBLE);
+
+        BlockState replacedTop = ReplacementService.replacementState(
+            topSlab,
+            Blocks.STONE_BRICK_SLAB.defaultBlockState()
+        );
+        BlockState replacedDouble = ReplacementService.replacementState(
+            doubleSlab,
+            Blocks.STONE_BRICK_SLAB.defaultBlockState()
+        );
+
+        assertSame(SlabType.TOP, replacedTop.getValue(SlabBlock.TYPE));
+        assertSame(SlabType.DOUBLE, replacedDouble.getValue(SlabBlock.TYPE));
     }
 
     private static ReplacementContext contextFor(
