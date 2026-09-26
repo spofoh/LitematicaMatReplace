@@ -27,6 +27,14 @@ jobs:
           bash ./gradlew :26.1:build :26.1.1:build :26.1.2:build :26.2:build --console=plain --stacktrace 2>&1 | tee build.log
           result=${PIPESTATUS[0]}
           if [[ $result -ne 0 ]]; then
+            failure=$(sed -n '/^FAILURE: Build failed/,/^\* Try:/p' build.log | head -n 60)
+            if [[ -z $failure ]]; then
+              failure=$(tail -n 40 build.log)
+            fi
+            failure=${failure//'%'/'%25'}
+            failure=${failure//$'\r'/'%0D'}
+            failure=${failure//$'\n'/'%0A'}
+            echo "::error title=Gradle build failed::$failure"
             {
               echo '### Gradle build failure'
               echo '```text'
