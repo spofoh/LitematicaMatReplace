@@ -1,4 +1,4 @@
-name: Build and prerelease
+name: Build and release
 
 on:
   push:
@@ -57,13 +57,13 @@ jobs:
             fi
           done
 
-      - name: Publish GitHub prerelease
+      - name: Publish GitHub release
         uses: softprops/action-gh-release@v3
         with:
           tag_name: build-${{ github.sha }}
-          name: Build ${{ github.sha }}
-          prerelease: true
-          make_latest: false
+          name: LMR build ${{ github.run_number }}
+          prerelease: false
+          make_latest: true
           target_commitish: ${{ github.sha }}
           generate_release_notes: true
           fail_on_unmatched_files: true
