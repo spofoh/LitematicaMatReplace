@@ -12,17 +12,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Java 25
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '25'
           cache: gradle
 
       - name: Build and test all Minecraft versions
-        run: bash ./gradlew :26.1:build :26.1.1:build :26.1.2:build :26.2:build --console=plain
+        shell: bash
+        run: |
+          bash ./gradlew :26.1:build :26.1.1:build :26.1.2:build :26.2:build --console=plain --stacktrace 2>&1 | tee build.log
+          result=${PIPESTATUS[0]}
+          if [[ $result -ne 0 ]]; then
+            {
+              echo '### Gradle build failure'
+              echo '```text'
+              tail -n 100 build.log
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit "$result"
+          fi
 
       - name: Check release jars
         shell: bash
@@ -36,7 +48,7 @@ jobs:
           done
 
       - name: Publish GitHub prerelease
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: build-${{ github.sha }}
           name: Build ${{ github.sha }}
