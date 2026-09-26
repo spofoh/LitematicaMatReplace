@@ -5,7 +5,7 @@ minecraft_compat = "26.1"
 dependency_minecraft_version = "26.1.2"
 malilib_version = "0.28.9"
 malilib_compat = ">=0.28.9 <0.29"
-litematica_version = "0.27.10"
+litematica_modrinth_id = "MRcKRVoi" # 26.1.2-0.27.10
 litematica_compat = ">=0.27.10 <0.28"
 
 ["26.1.1"]
@@ -13,7 +13,7 @@ minecraft_compat = "26.1.1"
 dependency_minecraft_version = "26.1.2"
 malilib_version = "0.28.9"
 malilib_compat = ">=0.28.9 <0.29"
-litematica_version = "0.27.10"
+litematica_modrinth_id = "MRcKRVoi" # 26.1.2-0.27.10
 litematica_compat = ">=0.27.10 <0.28"
 
 ["26.1.2"]
@@ -21,7 +21,7 @@ minecraft_compat = "26.1.2"
 dependency_minecraft_version = "26.1.2"
 malilib_version = "0.28.9"
 malilib_compat = ">=0.28.9 <0.29"
-litematica_version = "0.27.10"
+litematica_modrinth_id = "MRcKRVoi" # 26.1.2-0.27.10
 litematica_compat = ">=0.27.10 <0.28"
 
 ["26.2"]
@@ -29,5 +29,5 @@ minecraft_compat = "26.2"
 dependency_minecraft_version = "26.2"
 malilib_version = "0.29.3"
 malilib_compat = ">=0.29.3 <0.30"
-litematica_version = "0.28.4"
+litematica_modrinth_id = "jzraAo7b" # 26.2-0.28.4
 litematica_compat = ">=0.28.4 <0.29"

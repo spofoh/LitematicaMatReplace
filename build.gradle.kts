@@ -50,13 +50,7 @@ dependencies {
     modImplementation(
         "fi.dy.masa.malilib:malilib-fabric-${property("dependency_minecraft_version")}:${property("malilib_version")}"
     )
-    val litematicaDependency = if (property("dependency_minecraft_version") == "26.2") {
-        // 26.2-0.28.4 is published on Modrinth but missing from MasaModding Maven.
-        "maven.modrinth:bEpr0Arc:jzraAo7b"
-    } else {
-        "fi.dy.masa.litematica:litematica-fabric-${property("dependency_minecraft_version")}:${property("litematica_version")}"
-    }
-    modImplementation(litematicaDependency)
+    modImplementation("maven.modrinth:bEpr0Arc:${property("litematica_modrinth_id")}")
 
     testImplementation(
         "net.fabricmc:fabric-loader-junit:${property("fabric_loader_version")}"
