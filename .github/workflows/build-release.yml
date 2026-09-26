@@ -1,0 +1,48 @@
+name: Build and prerelease
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Java 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: gradle
+
+      - name: Build and test all Minecraft versions
+        run: bash ./gradlew :26.1:build :26.1.1:build :26.1.2:build :26.2:build --console=plain
+
+      - name: Check release jars
+        shell: bash
+        run: |
+          for version in 26.1 26.1.1 26.1.2 26.2; do
+            jars=(versions/"$version"/build/libs/lmr-fabric-"$version"-*.jar)
+            if [[ ${#jars[@]} -ne 1 || ! -f ${jars[0]} ]]; then
+              echo "Expected exactly one release jar for Minecraft $version" >&2
+              exit 1
+            fi
+          done
+
+      - name: Publish GitHub prerelease
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.sha }}
+          name: Build ${{ github.sha }}
+          prerelease: true
+          make_latest: false
+          target_commitish: ${{ github.sha }}
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          files: versions/*/build/libs/lmr-fabric-*.jar

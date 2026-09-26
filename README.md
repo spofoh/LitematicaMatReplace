@@ -65,6 +65,15 @@ The build produces distributable jars only—no source jars.
 
 </details>
 
+## Automated GitHub builds
+
+Every push to `main` builds and tests all four Minecraft versions with Java 25.
+If all builds succeed, GitHub Actions publishes the four jars as a prerelease
+under [Releases](https://github.com/spofoh/LitematicaMatReplace/releases).
+Each prerelease uses a `build-<commit SHA>` tag, so it remains tied to the exact
+commit that produced it. No additional GitHub token or repository secret is
+needed.
+
 ---
 
 GPL-3.0-only · © 2026

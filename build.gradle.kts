@@ -26,6 +26,11 @@ repositories {
         "FallenBreath",
         "me.fallenbreath"
     )
+    strictMaven(
+        "https://api.modrinth.com/maven",
+        "Modrinth",
+        "maven.modrinth"
+    )
     maven("https://jitpack.io") {
         name = "JitPack"
         content {
@@ -45,9 +50,13 @@ dependencies {
     modImplementation(
         "fi.dy.masa.malilib:malilib-fabric-${property("dependency_minecraft_version")}:${property("malilib_version")}"
     )
-    modImplementation(
+    val litematicaDependency = if (property("dependency_minecraft_version") == "26.2") {
+        // 26.2-0.28.4 is published on Modrinth but missing from MasaModding Maven.
+        "maven.modrinth:bEpr0Arc:jzraAo7b"
+    } else {
         "fi.dy.masa.litematica:litematica-fabric-${property("dependency_minecraft_version")}:${property("litematica_version")}"
-    )
+    }
+    modImplementation(litematicaDependency)
 
     testImplementation(
         "net.fabricmc:fabric-loader-junit:${property("fabric_loader_version")}"
