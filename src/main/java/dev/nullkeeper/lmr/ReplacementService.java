@@ -21,7 +21,6 @@ import fi.dy.masa.litematica.util.FileType;
 import fi.dy.masa.malilib.util.data.ItemType;
 import java.nio.file.Path;
 import net.minecraft.core.Vec3i;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -62,12 +61,7 @@ public final class ReplacementService {
             FileType.LITEMATICA_SCHEMATIC
         );
 
-        CompoundTag snapshot = context.schematic().writeToNBT();
-        LitematicaSchematic outputSchematic = new LitematicaSchematic(
-            targetFile,
-            snapshot,
-            FileType.LITEMATICA_SCHEMATIC
-        );
+        LitematicaSchematic outputSchematic = copySchematic(targetFile, context.schematic());
         BlockState targetState = targetBlock.defaultBlockState();
 
         long outputChanges = replaceMatchingPositions(
@@ -116,12 +110,7 @@ public final class ReplacementService {
             FileType.LITEMATICA_SCHEMATIC
         );
 
-        CompoundTag snapshot = context.schematic().writeToNBT();
-        LitematicaSchematic outputSchematic = new LitematicaSchematic(
-            targetFile,
-            snapshot,
-            FileType.LITEMATICA_SCHEMATIC
-        );
+        LitematicaSchematic outputSchematic = copySchematic(targetFile, context.schematic());
         long outputChanges = applyOperations(outputSchematic, batch.operations(), true);
         if (outputChanges == 0) {
             return new SaveResult(false, 0, targetFile, SaveFailure.NO_MATCHES);
@@ -146,6 +135,23 @@ public final class ReplacementService {
         return new SaveResult(true, liveChanges, targetFile, SaveFailure.NONE);
     }
 
+    private static LitematicaSchematic copySchematic(
+        Path targetFile,
+        LitematicaSchematic schematic
+    ) {
+        //? if >=26.3 {
+        return new LitematicaSchematic(
+            targetFile,
+            schematic.writeToData(),
+            FileType.LITEMATICA_SCHEMATIC
+        );
+        //?} else {
+        /*return new LitematicaSchematic(
+            targetFile,
+            schematic.writeToNBT(),
+            FileType.LITEMATICA_SCHEMATIC
+        );*///?}
+    }
     static long applyOperations(
         LitematicaSchematic schematic,
         java.util.List<ReplacementBatch.Operation> operations,

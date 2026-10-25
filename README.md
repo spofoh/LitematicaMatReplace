@@ -4,7 +4,7 @@
   <p><strong>Replace one material everywhere in a Litematica schematic—in a few clicks.</strong></p>
   <p>
     <a href="https://fabricmc.net/use/installer/"><img alt="Fabric" src="https://img.shields.io/badge/loader-Fabric-d8b57a"></a>
-    <img alt="Minecraft 26.1 to 26.2" src="https://img.shields.io/badge/Minecraft-26.1%20%E2%86%92%2026.2-62b47a">
+    <img alt="Minecraft 26.1 to 26.3" src="https://img.shields.io/badge/Minecraft-26.1%20%E2%86%92%2026.3-62b47a">
     <a href="LICENSE"><img alt="GPL 3.0 only" src="https://img.shields.io/badge/license-GPL--3.0--only-blue"></a>
   </p>
 </div>
@@ -36,7 +36,7 @@ Type a name or namespaced ID and choose from rendered block previews.
    [Modrinth](https://modrinth.com/mod/litematicamatreplace-lmr)
    and place all three mods in your `mods` folder.
 
-> **Supported:** Minecraft `26.1`, `26.1.1`, `26.1.2`, and `26.2` on Fabric.
+> **Supported:** Minecraft `26.1`, `26.1.1`, `26.1.2`, `26.2`, and `26.3` on Fabric.
 > LMR is client-side and does not bundle Litematica or MaLiLib.
 
 ## Use
@@ -57,7 +57,7 @@ Type a name or namespaced ID and choose from rendered block previews.
 Requires Java 25.
 
 ```powershell
-.\gradlew.bat :26.1:build :26.1.1:build :26.1.2:build :26.2:build
+.\gradlew.bat :26.1:build :26.1.1:build :26.1.2:build :26.2:build :26.3:build
 ```
 
 Jars are written to each target's `versions/<minecraft>/build/libs/` folder.
@@ -67,8 +67,8 @@ The build produces distributable jars only—no source jars.
 
 ## Automated GitHub builds
 
-Every push to `main` builds and tests all four Minecraft versions with Java 25.
-If all builds succeed, GitHub Actions publishes the four jars as a regular
+Every push to `main` builds and tests all five Minecraft versions with Java 25.
+If all builds succeed, GitHub Actions publishes the five jars as a regular
 [GitHub Release](https://github.com/spofoh/LitematicaMatReplace/releases/latest).
 Each release uses a `build-<commit SHA>` tag, so it remains tied to the exact
 commit that produced it. No additional GitHub token or repository secret is
